@@ -7,7 +7,11 @@ import com.example.designpatternskotlin.adapter.AudioPlayer
 import com.example.designpatternskotlin.adapter.MediaPlayer
 import com.example.designpatternskotlin.adapter.SoundAdapter
 import com.example.designpatternskotlin.builder.Shape
+import com.example.designpatternskotlin.command.*
 import com.example.designpatternskotlin.facade.FacadeMusicPlayer
+import com.example.designpatternskotlin.observer.ElectricMotor
+import com.example.designpatternskotlin.observer.Thermometer
+import com.example.designpatternskotlin.prototype.ShapeCloneMaker
 import com.example.designpatternskotlin.singleton.SingletonClass
 
 class MainActivity : AppCompatActivity() {
@@ -67,6 +71,63 @@ class MainActivity : AppCompatActivity() {
         val facadeMusicPlayer = FacadeMusicPlayer()
         facadeMusicPlayer.turnOnSystem()
         facadeMusicPlayer.playMusic("Waka Waka - Shakira")
+
+        //endregion
+
+        //region command
+        /*
+            We have several sections in this pattern:
+            1-Command: An interface that includes the definition of the main functions.
+            2-ConcreteCommand: We build this class based on Command and implement the functions
+             we had in Command according to this class.
+            3-Invoker: The class that delivers the Command to the request.
+            4-Receiver: Request that command
+
+            ex: We write a program that can change the color of a class called Light
+            to three lights red, blue and white according to Command.
+         */
+
+        val remoteControl = RemoteControl()
+        val light = Light()
+
+        remoteControl.pressButton(LightWhiteCommand(light))
+        remoteControl.pressButton(LightRedCommand(light))
+        remoteControl.pressButton(LightBlueCommand(light))
+        remoteControl.undoButton()
+        remoteControl.getStackLog()
+        //endregion
+
+        //region observer
+        /*
+            We have a thermometer, as soon as the temperature changes,
+            if the temperature is above 80 degrees,
+            turn off the engine and if it is below 80, turn on the engine.
+         */
+
+        val motor = ElectricMotor()
+        val thermometer = Thermometer()
+
+        thermometer.addPropertyChangeListener(motor)
+
+        thermometer.temperature = 10
+        thermometer.temperature = 50
+        thermometer.temperature = 200
+
+        thermometer.removePropertyChangeListener(motor)
+
+        thermometer.temperature = 10
+        thermometer.temperature = 50
+        thermometer.temperature = 200
+        //endregion
+
+        //region prototype
+        /*
+            In Prototype, instead of creating an object from scratch,
+             we create a clone of the object, that is, we copy the object to another object.
+         */
+
+        val cloneMaker = ShapeCloneMaker()
+        val circle = cloneMaker.getShape("circle")
 
         //endregion
     }
